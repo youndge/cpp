@@ -43,7 +43,10 @@ void printVector(vector<int>& v) {
 	}
 	cout << endl;
 }
-//@brief vector构造方法，推荐way1 & way5
+/**基础1
+ *@brief vector构造方法，推荐way1 & way5 
+ * 
+*/
 void vectorConstructor()
 {
 	//way1.无参构造
@@ -53,7 +56,7 @@ void vectorConstructor()
 		v1.push_back(i);
 	}
 	printVector(v1);
-	//way2.构造的同时初始化
+	//way2.初始化列表  C++11 
 	vector<int> v2 { 1,2,3,4,5 };
 	printVector(v2);
 	//way3.有参构造 （arg0:容器元素个数,arg1:元素值）
@@ -66,6 +69,10 @@ void vectorConstructor()
 	vector<int> v5(v1.begin(), v1.end());
 	printVector(v5);
 }
+/**基础2 
+ * @brief vector赋值
+ * 
+*/
 void vectorAssign() {
 	vector<int> v { 0,1,2,3,4,5,6,7,8,9 };
 	printVector(v);
@@ -87,7 +94,10 @@ void vectorAssign() {
 void printValue(int val) {
 	cout << val << endl;
 }
-//@brief vector遍历的几种方法
+/**基础3
+ *@brief vector遍历的几种方法  cbegin(),cend()同理，rbegin(),rend()反向迭代器 
+ * 
+*/
 void vectorTraverse() {
 	vector<int> v { 0,1,2,3,4,5,6,7,8,9 };
 	//way1.迭代器遍历---while
@@ -105,7 +115,10 @@ void vectorTraverse() {
 	//way3.STL算法遍历 #include <algorithm>
 	for_each(v.begin(), v.end(), printValue);
 }
-
+/**基础4
+ *@brief vector的容量和大小 
+ * 
+*/
 void vectorCapSize() {
 	vector<int> v { 0,1,2,3,4,5,6,7,8,9 };
 	printVector(v);
@@ -124,27 +137,45 @@ void vectorCapSize() {
 	printVector(v);
 	cout << "v.capacity=" << v.capacity() << "    v.size=" << v.size() << endl;
 }
-
+/**基础5
+ *@brief vector的插入和删除 
+ * 
+ * Note1:emplace_back() 和 push_back() 的区别：就在于底层实现的机制不同。push_back() 向容器尾部添加元素时，
+ * 	首先会创建这个元素，然后再将这个元素拷贝或者移动到容器中（如果是拷贝的话，事后会自行销毁先前创建的这个元素）；
+ * 	而 emplace_back() 在实现时，则是直接在容器尾部创建这个元素，省去了拷贝或移动元素的过程。
+ * Note2:emplace()和insert()的区别同Note1，除此之外，emplace()每次只能插入一个元素，不是多个；
+ * 	iterator emplace (const_iterator pos, args...);
+ * Note3:<algorithm>里的remove()也可以删除元素；
+*/
 void vectorInsertAndDel() {
-	vector<int> v1; //尾插 
-	v1.push_back(10); 
+	vector<int> v1; 
+	v1.push_back(10); //尾插 
 	v1.push_back(20); 
 	v1.push_back(30); 
-	v1.push_back(40); 
-	v1.push_back(50); 
-	printVector(v1); //尾删 
-	v1.pop_back(); 
-	printVector(v1); //插入 
-	v1.insert(v1.begin(), 100); 
+	v1.emplace_back(40); //C++11
+	v1.emplace_back(50); 
+	printVector(v1); 
+	v1.pop_back(); //尾删1  不需要入参，无返回值
+	printVector(v1);  
+	v1.insert(v1.begin(), 100); //插入
+	printVector(v1);
+	v1.emplace(v1.begin(),250);//C++11
 	printVector(v1);
 	v1.insert(v1.begin(), 2, 1000);
-	printVector(v1); //删除 
-	v1.erase(v1.begin()); 
-	printVector(v1); //清空 
-	v1.erase(v1.begin(), v1.end());
-	v1.clear(); 
+	printVector(v1); 
+	v1.erase(v1.begin()); //删除2  入参是删除元素的迭代器，返回下一个元素的迭代器；  
+	printVector(v1); 
+	v1.erase(v1.begin(), v1.end());//删除3  入参是两个元素迭代器，返回下一个元素的迭代器；
+	v1.clear(); //清空容器，size()为0,cap()不变
 	printVector(v1);
 }
+/**基础6
+ *@brief vector访问指定元素 
+ * 
+ * Note1:at和[]的区别：容器名[n]这种获取元素的方式，需要确保下标 n 的值不会超过容器的容量（可以通过 capacity() 成员函数获取），
+ * 否则会发生越界访问的错误。幸运的是，和 array 容器一样，vector 容器也提供了 at() 成员函数，当传给 at() 的索引会造成越界时，
+ * 会抛出std::out_of_range异常。
+*/
 void vectorGet() {
 	vector<int>v1; 
 	for (int i = 0; i < 10; i++) { 
@@ -161,6 +192,10 @@ void vectorGet() {
 	cout << "v1的第一个元素为： " << v1.front() << endl; 
 	cout << "v1的最后一个元素为： " << v1.back() << endl;
 }
+/**基础7
+ * @brief vector的交换，收缩内存
+ * 
+*/
 void vectorSwap() {
 	cout << "swap case1:" << endl;
 	vector<int> v1{ 1,2,3,4,5,6,7,8,9 };
@@ -187,6 +222,10 @@ void vectorSwap() {
 	cout << "v的容量为：" << v.capacity() << endl; 
 	cout << "v的大小为：" << v.size() << endl;
 }
+/**基础8
+ * @brief vector预留空间
+ * 
+*/
 void vectorReserve() {
 	vector<int> v; //预留空间 
 	v.reserve(100000); 
@@ -202,7 +241,36 @@ void vectorReserve() {
 	}
 	cout << "num:" << num << endl;
 }
+/**提升1 vector容器的迭代器注意事项
+ * 初始化为空的容器不能使用迭代器，因为begin()和end()指向同一个位置；
+ * vector容器增加容量之后，原迭代器指向的位置会变；
+*/
+void iteratorNote()
+{
+    vector<int>values{1,2,3};
+    cout << "values 容器首个元素的地址：" << values.data() << endl;
+    auto first = values.begin();
+    auto end = values.end();
+    //增加 values 的容量
+    values.reserve(20);
+    cout << "values 容器首个元素的地址：" << values.data() << endl;
+    first = values.begin();//重新获取first和end，不能再用原有的first和end，指向变了；
+    end = values.end();
+    while (first != end) {
+        cout << *first ;
+        ++first;
+    }
+}
+/**提升2  如何避免vector不必要的扩容？
+ * 
+*/
 
+/**提升3 swap()的特殊用法
+ * 
+*/
+/**提升4 vector<bool>不是存储bool类型的容器
+ * 
+*/
 int main()
 {
 	std::cout << "Hello World!\n";
@@ -215,6 +283,8 @@ int main()
 	vectorSwap();             /*7*/
 	vectorReserve();            /*8*/
 
+	iteratorNote();
+	
 }
 
 
