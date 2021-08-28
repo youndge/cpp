@@ -191,6 +191,8 @@ void vectorGet() {
 	cout << endl;
 	cout << "v1的第一个元素为： " << v1.front() << endl; 
 	cout << "v1的最后一个元素为： " << v1.back() << endl;
+
+	cout << *v1.data() << "~" << *(v1.data()+9) << endl;
 }
 /**基础7
  * @brief vector的交换，收缩内存
@@ -279,11 +281,11 @@ int main()
 	//vectorTraverse();         /*3*/
 	//vectorCapSize();          /*4*/
 	//vectorInsertAndDel();     /*5*/
-	//vectorGet();              /*6*/
-	vectorSwap();             /*7*/
-	vectorReserve();            /*8*/
+	vectorGet();              /*6*/
+	//vectorSwap();             /*7*/
+	//vectorReserve();            /*8*/
 
-	iteratorNote();
+	//iteratorNote();
 	
 }
 
