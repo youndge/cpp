@@ -182,10 +182,149 @@ void mapGetValueByKey(){
     cout << endl;
     // 3)find()或for循环+迭代器
 }
+/**
+ * 基础4.map insert()方法
+ * 1) 无需指定插入位置，直接将键值对添加到 map 容器中。insert() 方法的语法格式有以下 2 种：
+//1、引用传递一个键值对
+pair<iterator,bool> insert (const value_type& val);
+//2、以右值引用的方式传递键值对
+template <class P>
+    pair<iterator,bool> insert (P&& val);
+其中，val 参数表示键值对变量，同时该方法会返回一个 pair 对象，其中 pair.first 表示一个迭代器，pair.second 为一个 bool 类型变量：
+如果成功插入 val，则该迭代器指向新插入的 val，bool 值为 true；
+如果插入 val 失败，则表明当前 map 容器中存有和 val 的键相同的键值对（用 p 表示），此时返回的迭代器指向 p，bool 值为 false。
+*
+* 2) 除此之外，insert() 方法还支持向 map 容器的指定位置插入新键值对，该方法的语法格式如下：
+//以普通引用的方式传递 val 参数
+iterator insert (const_iterator position, const value_type& val);
+//以右值引用的方式传递 val 键值对参数
+template <class P>
+    iterator insert (const_iterator position, P&& val);
 
+其中 val 为要插入的键值对变量。注意，和第 1 种方式的语法格式不同，这里 insert() 方法返回的是迭代器，而不再是 pair 对象：
+如果插入成功，insert() 方法会返回一个指向 map 容器中已插入键值对的迭代器；
+如果插入失败，insert() 方法同样会返回一个迭代器，该迭代器指向 map 容器中和 val 具有相同键的那个键值对。
+*
+* 3) insert() 方法还支持向当前 map 容器中插入其它 map 容器指定区域内的所有键值对，该方法的语法格式如下：
+template <class InputIterator>
+  void insert (InputIterator first, InputIterator last);
+其中 first 和 last 都是迭代器，它们的组合<first,last>可以表示某 map 容器中的指定区域。
+*
+* 4) 除了以上一种格式外，insert() 方法还允许一次向 map 容器中插入多个键值对，其语法格式为：
+void insert ({val1, val2, ...});
+*/
+void mapInsert(){
+    //1)无需指定插入位置 
+    //创建一个空 map 容器
+    std::map<string, string> mp1;
+    //创建一个真实存在的键值对变量
+    std::pair<string, string> p1 = { "name","tony" };
+    //创建一个接收 insert() 方法返回值的 pair 对象
+    std::pair<std::map<string, string>::iterator, bool> ret;
+    //插入 p1，由于 p1 并不是临时变量，因此会以第一种方式传参
+    ret = mp1.insert(p1);
+    cout << "ret.iter = <{" << ret.first->first << ", " << ret.first->second << "}, " << ret.second << ">" << endl;
+    //以右值引用的方式传递临时的键值对变量
+    ret = mp1.insert({ "age","19" });
+    cout << "ret.iter = <{" << ret.first->first << ", " << ret.first->second << "}, " << ret.second << ">" << endl;
+    //插入失败样例
+    ret = mp1.insert({ "name","tony" });
+    cout << "ret.iter = <{" << ret.first->first << ", " << ret.first->second << "}, " << ret.second << ">" << endl;
+
+    //2）指定插入位置
+    //创建一个空 map 容器
+    std::map<string, string> mp2;
+    //创建一个真实存在的键值对变量
+    std::pair<string, string> p2 = { "name","tony" };
+    //指定要插入的位置
+    std::map<string, string>::iterator it = mp2.begin();
+    //向 it 位置以普通引用的方式插入 p2
+    auto iter1 = mp2.insert(it, p2);
+    cout << iter1->first << " " << iter1->second << endl;
+    //向 it 位置以右值引用的方式插入临时键值对
+    auto iter2 = mp2.insert(it, std::pair<string, string>("age", "19"));
+    cout << iter2->first << " " << iter2->second << endl;
+    //插入失败样例
+    auto iter3 = mp2.insert(it, std::pair<string, string>("name", "tony"));
+    cout << iter3->first << " " << iter3->second << endl;
+
+    //3)插入指定区域的键值对
+    //创建并初始化 map 容器
+    std::map<std::string, std::string> mp3{ {"name","tony"},
+                                                {"age","19"},
+                                                {"phone","123456"} };
+    //创建一个空 map 容器
+    std::map<std::string, std::string>copymap;
+    //指定插入区域
+    std::map<string, string>::iterator first = ++mp3.begin();
+    std::map<string, string>::iterator last = mp3.end();
+    //将<first,last>区域内的键值对插入到 copymap 中
+    copymap.insert(first, last);
+    //遍历输出 copymap 容器中的键值对
+    for (auto iter = copymap.begin(); iter != copymap.end(); ++iter) {
+        cout << iter->first << " " << iter->second << endl;
+    }
+    //4)insert()多个pair
+    map<string,string> mp4;
+    mp4.insert({{"name","tom"},{"age","17"},{"phone","567890"}});
+    for (auto iter = mp4.begin(); iter != mp4.end(); ++iter) {
+        cout << iter->first << " " << iter->second << endl;
+    }
+}
+
+/**
+ * 基础5.emplace()
+ * 实现相同的插入操作，无论是用 emplace() 还是 emplace_hont()，都比 insert() 方法的效率高
+ * 1)emplace()
+ template <class... Args>
+  pair<iterator,bool> emplace (Args&&... args);
+参数 (Args&&... args) 指的是，这里只需要将创建新键值对所需的数据作为参数直接传入即可，此方法可以自行利用这些数据构建出指定的键值对。
+另外，该方法的返回值也是一个 pair 对象，其中 pair.first 为一个迭代器，pair.second 为一个 bool 类型变量：
+当该方法将键值对成功插入到 map 容器中时，其返回的迭代器指向该新插入的键值对，同时 bool 变量的值为 true；
+当插入失败时，则表明 map 容器中存在具有相同键的键值对，此时返回的迭代器指向此具有相同键的键值对，同时 bool 变量的值为 false。
+*
+* 2) emplace_hint() 方法的功能和 emplace() 类似，其语法格式如下：
+template <class... Args>
+  iterator emplace_hint (const_iterator position, Args&&... args);
+显然和 emplace() 语法格式相比，有以下 2 点不同：
+该方法不仅要传入创建键值对所需要的数据，还需要传入一个迭代器作为第一个参数，指明要插入的位置（新键值对键会插入到该迭代器指向的键值对的前面）；
+该方法的返回值是一个迭代器，而不再是 pair 对象。当成功插入新键值对时，返回的迭代器指向新插入的键值对；反之，如果插入失败，则表明 map 容器
+中存有相同键的键值对，返回的迭代器就指向这个键值对。
+*/
+void mapEmplace(){
+    //1.emplace()
+    //创建并初始化 map 容器
+    std::map<string, string> mp1;
+    //插入键值对
+    pair<map<string, string>::iterator, bool> ret = mp1.emplace("name", "jemmy");
+    cout << "1、ret.iter = <{" << ret.first->first << ", " << ret.first->second << "}, " << ret.second << ">" << endl;
+    //插入新键值对
+    ret = mp1.emplace("age", "15");
+    cout << "2、ret.iter = <{" << ret.first->first << ", " << ret.first->second << "}, " << ret.second << ">" << endl;
+    //失败插入的样例
+    ret = mp1.emplace("name", "jemmy");
+    cout << "3、ret.iter = <{" << ret.first->first << ", " << ret.first->second << "}, " << ret.second << ">" << endl;
+
+    //2.emplace_hint()
+    //创建并初始化 map 容器
+    std::map<string, string>mp2;
+    //指定在 map 容器插入键值对
+    map<string, string>::iterator iter = mp2.emplace_hint(mp2.begin(),"name", "mary");
+    cout << iter->first << " " << iter->second << endl;
+    iter = mp2.emplace_hint(mp2.begin(), "age", "16");
+    cout << iter->first << " " << iter->second << endl;
+    //插入失败样例
+    iter = mp2.emplace_hint(mp2.begin(), "name", "mary");
+    cout << iter->first << " " << iter->second << endl;
+}
+/**
+ * 提升1.C++ map容器operator[],insert()和emplace()效率对比（深度剖析）
+*/
 int main(){
 
     //mapTraverse();
-    mapGetValueByKey();
+    // mapGetValueByKey();
+    // mapInsert();
+    mapEmplace();
     return 0;
 }
