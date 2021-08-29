@@ -311,6 +311,39 @@ void listUnique(){
 /**
  * 提升1.list容器底层存储结构
 */
+
+/**
+ * 提升2.forward_list单链表
+ * 1.成员函数：
+ * 表 2 forward_list 容器可用的成员函数
+成员函数	功能
+before_begin()	返回一个前向迭代器，其指向容器中第一个元素之前的位置。
+begin()	返回一个前向迭代器，其指向容器中第一个元素的位置。
+end()	返回一个前向迭代器，其指向容器中最后一个元素之后的位置。
+cbefore_begin()	和 before_begin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。
+cbegin()	和 begin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。
+cend()	和 end() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。
+empty()	判断容器中是否有元素，若无元素，则返回 true；反之，返回 false。
+max_size()	返回容器所能包含元素个数的最大值。这通常是一个很大的值，一般是 232-1，所以我们很少会用到这个函数。
+front()	返回第一个元素的引用。
+assign()	用新元素替换容器中原有内容。
+push_front()	在容器头部插入一个元素。
+emplace_front()	在容器头部生成一个元素。该函数和 push_front() 的功能相同，但效率更高。
+pop_front()	删除容器头部的一个元素。
+emplace_after()	在指定位置之后插入一个新元素，并返回一个指向新元素的迭代器。和 insert_after() 的功能相同，但效率更高。
+insert_after()	在指定位置之后插入一个新元素，并返回一个指向新元素的迭代器。
+erase_after()	删除容器中某个指定位置或区域内的所有元素。
+swap()	交换两个容器中的元素，必须保证这两个容器中存储的元素类型是相同的。
+resize()	调整容器的大小。
+clear()	删除容器存储的所有元素。
+splice_after()	将某个 forward_list 容器中指定位置或区域内的元素插入到另一个容器的指定位置之后。
+remove(val)	删除容器中所有等于 val 的元素。
+remove_if()	删除容器中满足条件的元素。
+unique()	删除容器中相邻的重复元素，只保留一个。
+merge()	合并两个事先已排好序的 forward_list 容器，并且合并之后的 forward_list 容器依然是有序的。
+sort()	通过更改容器中元素的位置，将它们进行排序。
+reverse()	反转容器中元素的顺序。
+*/
 int main(){
     // createList();
     // listTraverse();
