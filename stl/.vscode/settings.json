@@ -3,6 +3,7 @@
         "array": "cpp",
         "ostream": "cpp",
         "__node_handle": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "algorithm": "cpp"
     }
 }
